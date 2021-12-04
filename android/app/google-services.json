@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "245254629329",
+    "project_id": "inframe-b719e",
+    "storage_bucket": "inframe-b719e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:245254629329:android:e6011cc68817bc9aba62f0",
+        "android_client_info": {
+          "package_name": "com.sk.inframe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "245254629329-5f2an0q12m66km4mi5cd5g8fqdg3n8kc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVF2CAiTxBugxt3XXsvl1zOVGJoIhZ7fo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "245254629329-5f2an0q12m66km4mi5cd5g8fqdg3n8kc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
