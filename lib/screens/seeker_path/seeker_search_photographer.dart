@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:inframe/Widgets/pg_item.dart';
 import 'package:inframe/color_constants.dart';
 import 'package:inframe/model/pg.dart';
 
@@ -22,6 +23,8 @@ class SeekerSearchPhotographer extends StatefulWidget {
 
 class _SeekerSearchPhotographerState extends State<SeekerSearchPhotographer> {
   String selectedValue = "BusinessName";
+  var pgRef = FirebaseDatabase.instance.reference().child("user");
+  var searchTxt = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,8 +93,10 @@ class _SeekerSearchPhotographerState extends State<SeekerSearchPhotographer> {
                           children: <Widget>[
                             Expanded(
                               child: TextField(
-                                onChanged: (v){
-
+                                onChanged: (v) {
+                                  setState(() {
+                                    searchTxt = v;
+                                  });
                                 },
                                 inputFormatters: [
                                   LengthLimitingTextInputFormatter(10),
@@ -136,34 +141,36 @@ class _SeekerSearchPhotographerState extends State<SeekerSearchPhotographer> {
               ],
             ),
             StreamBuilder(
-                    stream: pgRef.onValue,
-                    builder: (context, snapshot) {
-                      final List<PG> pgList = [];
-                      if (snapshot.hasData) {
-                        final questionMap = Map<String, dynamic>.from(
-                            (snapshot.data! as Event).snapshot.value);
-                        questionMap.forEach((key, value) {
-                          final inboxItem = Map<String, dynamic>.from(value);
-                          final inboxModel = PG.fromRTDB(inboxItem);
-                          if (inboxItem[selectedValue].toString().toLowerCase().contains() {
-                            inboxList.add(inboxModel);
-                          }
-                        });
+                stream: pgRef.onValue,
+                builder: (context, snapshot) {
+                  final List<PG> pgList = [];
+                  if (snapshot.hasData) {
+                    final questionMap = Map<String, dynamic>.from(
+                        (snapshot.data! as Event).snapshot.value);
+                    questionMap.forEach((key, value) {
+                      final pgItem = Map<String, dynamic>.from(value);
+                      final pgModel = PG.fromRTDB(pgItem);
+                      if (pgItem[selectedValue]
+                          .toString()
+                          .toLowerCase()
+                          .contains(searchTxt)) {
+                        pgList.add(pgModel);
                       }
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 110),
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height / 1.2,
-                          width: MediaQuery.of(context).size.width,
-                          child: ListView.builder(
-                              // controller: ScrollController(initialScrollOffset: 5),
-                              itemCount: inboxList.length,
-                              itemBuilder: (context, index) =>
-                                  SeekerInboxItem(inboxList[index])),
-                        ),
-                      );
-                    }),
-            
+                    });
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 110),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height / 1.2,
+                      width: MediaQuery.of(context).size.width,
+                      child: ListView.builder(
+                          // controller: ScrollController(initialScrollOffset: 5),
+                          itemCount: pgList.length,
+                          itemBuilder: (context, index) =>
+                              PGItem(pgList[index])),
+                    ),
+                  );
+                }),
           ],
         ),
       ),
