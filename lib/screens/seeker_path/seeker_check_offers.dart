@@ -92,18 +92,22 @@ class _SeekerCheckOffersState extends State<SeekerCheckOffers> {
                     builder: (context, snapshot) {
                       final List<Offer> offerList = [];
                       if (snapshot.hasData) {
-                        final questionMap = Map<String, dynamic>.from(
-                            (snapshot.data! as Event).snapshot.value);
-                        questionMap.forEach((key, value) {
+                        if((snapshot.data! as Event).snapshot.value != null){
+                          final questionMap = Map<String, dynamic>.from(
+                              (snapshot.data! as Event).snapshot.value);
+
+                          questionMap.forEach((key, value) {
 
                             final offerItem = Map<String, dynamic>.from(value);
                             final offerModel = Offer.fromRTDB(offerItem);
                             if(offerItem["bidId"]==widget.bidId){
                               offerList.add(offerModel);
 
-                          }
+                            }
 
-                        });
+                          });
+                        }
+
                       }
                       return Padding(
                         padding: const EdgeInsets.only(top:80),

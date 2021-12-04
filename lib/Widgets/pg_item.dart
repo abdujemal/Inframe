@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inframe/model/pg.dart';
+import 'package:inframe/screens/seeker_path/seeker_inbox_chat.dart';
 
 import '../color_constants.dart';
 
@@ -26,23 +28,34 @@ class _PGItemState extends State<PGItem> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: ListTile(
-            leading: Column(
-              children: [
-                CircleAvatar(
+            leading:CircleAvatar(
                   backgroundColor: kMain,
                   child: Text(widget.pg.photographername.substring(0, 1)),
                 ),
-                const SizedBox(
-                  height: 2,
-                ),
-                Text(
-                  widget.pg.photographername,
-                  style: TextStyle(color: Colors.black87, fontSize: 13),
-                )
-              ],
-            ),
             title: Text(widget.pg.photographername),
             subtitle: Text("city: ${widget.pg.city}"),
+            trailing: GestureDetector(
+              onTap: (){
+                Get.to(()=>SeekerInboxChats(widget.pg.id));
+              },
+              child: Card(
+                color: kMain,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(7.0),
+                  child: Text(
+                    "Start Discussing",
+                    style: TextStyle(
+                        color: Colors.white70,
+                        fontWeight: FontWeight.bold,
+                      fontSize: 18
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),

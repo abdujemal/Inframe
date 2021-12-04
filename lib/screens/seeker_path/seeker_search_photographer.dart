@@ -22,7 +22,7 @@ class SeekerSearchPhotographer extends StatefulWidget {
 }
 
 class _SeekerSearchPhotographerState extends State<SeekerSearchPhotographer> {
-  String selectedValue = "BusinessName";
+  String selectedValue = "photographername";
   var pgRef = FirebaseDatabase.instance.reference().child("user");
   var searchTxt = "";
   @override
@@ -138,39 +138,40 @@ class _SeekerSearchPhotographerState extends State<SeekerSearchPhotographer> {
                         ),
                       ),
                     )),
+                StreamBuilder(
+                    stream: pgRef.onValue,
+                    builder: (context, snapshot) {
+                      final List<PG> pgList = [];
+                      if (snapshot.hasData) {
+                        final questionMap = Map<String, dynamic>.from(
+                            (snapshot.data! as Event).snapshot.value);
+                        questionMap.forEach((key, value) {
+                          final pgItem = Map<String, dynamic>.from(value);
+                          final pgModel = PG.fromRTDB(pgItem);
+                          if (pgItem[selectedValue]
+                              .toString()
+                              .toLowerCase()
+                              .contains(searchTxt)) {
+                            pgList.add(pgModel);
+                          }
+                        });
+                      }
+                      return Padding(
+                        padding: const EdgeInsets.only(top:160),
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height / 1.2,
+                          width: MediaQuery.of(context).size.width,
+                          child: ListView.builder(
+                            // controller: ScrollController(initialScrollOffset: 5),
+                              itemCount: pgList.length,
+                              itemBuilder: (context, index) =>
+                                  PGItem(pgList[index])),
+                        ),
+                      );
+                    }),
               ],
             ),
-            StreamBuilder(
-                stream: pgRef.onValue,
-                builder: (context, snapshot) {
-                  final List<PG> pgList = [];
-                  if (snapshot.hasData) {
-                    final questionMap = Map<String, dynamic>.from(
-                        (snapshot.data! as Event).snapshot.value);
-                    questionMap.forEach((key, value) {
-                      final pgItem = Map<String, dynamic>.from(value);
-                      final pgModel = PG.fromRTDB(pgItem);
-                      if (pgItem[selectedValue]
-                          .toString()
-                          .toLowerCase()
-                          .contains(searchTxt)) {
-                        pgList.add(pgModel);
-                      }
-                    });
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 110),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height / 1.2,
-                      width: MediaQuery.of(context).size.width,
-                      child: ListView.builder(
-                          // controller: ScrollController(initialScrollOffset: 5),
-                          itemCount: pgList.length,
-                          itemBuilder: (context, index) =>
-                              PGItem(pgList[index])),
-                    ),
-                  );
-                }),
+
           ],
         ),
       ),
@@ -253,9 +254,9 @@ class _MyPainter extends CustomPainter {
 
 List<DropdownMenuItem<String>> get dropdownItems {
   List<DropdownMenuItem<String>> menuItems = [
-    const DropdownMenuItem(child: Text("Business Name"), value: "BusinessName"),
-    const DropdownMenuItem(child: Text("Event Type"), value: "BudgetType"),
-    const DropdownMenuItem(child: Text("City"), value: "City"),
+    const DropdownMenuItem(child: Text("Business Name"), value: "photographername"),
+    // const DropdownMenuItem(child: Text("Event Type"), value: "BudgetType"),
+    const DropdownMenuItem(child: Text("City"), value: "city"),
   ];
   return menuItems;
 }
